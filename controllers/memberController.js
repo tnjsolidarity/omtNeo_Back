@@ -7,6 +7,7 @@ exports.createMember = async (req, res) => {
       name,
       role,
       phone,
+      dateOfBirth, // Add this
       skills,
       career,
       education,
@@ -19,13 +20,14 @@ exports.createMember = async (req, res) => {
     const count = await Member.countDocuments();
     const memberId = `MEM-${new Date().getFullYear()}-${String(count + 1).padStart(4, "0")}`;
 
-    console.log("Creating with data:", req.body); // Add this for debugging
+    console.log("Creating with data:", req.body);
 
     const member = await Member.create({
       memberId,
       name,
       role,
       phone,
+      dateOfBirth: dateOfBirth || null, // Add this
       skills: skills || [],
       career: career || [],
       education: education || [],
@@ -33,7 +35,7 @@ exports.createMember = async (req, res) => {
       passedOutYear: passedOutYear || null
     });
 
-    console.log("Created member:", member); // Add this for debugging
+    console.log("Created member:", member);
     res.status(201).json(member);
   } catch (err) {
     console.error("Create Member Error:", err);
@@ -65,11 +67,11 @@ exports.getMember = async (req, res) => {
 // UPDATE member - FIXED VERSION
 exports.updateMember = async (req, res) => {
   try {
-    // Don't destructure and filter out fields - use all fields from req.body
     const updateData = {
       name: req.body.name,
       role: req.body.role,
       phone: req.body.phone,
+      dateOfBirth: req.body.dateOfBirth || null, // Add this
       skills: req.body.skills || [],
       career: req.body.career || [],
       education: req.body.education || [],
@@ -77,7 +79,7 @@ exports.updateMember = async (req, res) => {
       passedOutYear: req.body.passedOutYear || null
     };
 
-    console.log("Updating with data:", updateData); // Add this for debugging
+    console.log("Updating with data:", updateData);
 
     const member = await Member.findByIdAndUpdate(
       req.params.id,
@@ -87,7 +89,7 @@ exports.updateMember = async (req, res) => {
 
     if (!member) return res.status(404).json({ error: "Member not found" });
 
-    console.log("Updated member:", member); // Add this for debugging
+    console.log("Updated member:", member);
     res.json(member);
   } catch (err) {
     console.error("Update Member Error:", err);

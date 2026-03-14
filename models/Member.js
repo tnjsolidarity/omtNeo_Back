@@ -1,4 +1,5 @@
-const mongoose = require('mongoose'); // Add this line at the top
+// models/Member.js
+const mongoose = require('mongoose');
 
 const memberSchema = new mongoose.Schema(
   {
@@ -16,6 +17,11 @@ const memberSchema = new mongoose.Schema(
         "State President"
       ],
       required: true
+    },
+    // Add dateOfBirth field here
+    dateOfBirth: { 
+      type: Date,
+      default: null
     },
     skills: { type: [String], default: [] },
     career: { type: [String], default: [] },
