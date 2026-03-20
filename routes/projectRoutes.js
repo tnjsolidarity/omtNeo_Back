@@ -1,8 +1,8 @@
-// In your projectRoutes.js
 const express = require("express");
 const router = express.Router();
-const auth = require("../middleware/authMiddleware"); // Import auth middleware
+const auth = require("../middleware/authMiddleware");
 
+// Import project controllers only
 const {
   getProjects,
   getProject,
@@ -11,11 +11,14 @@ const {
   deleteProject,
 } = require("../controllers/projectController");
 
-// Protect all routes with auth middleware
-router.get("/", auth, getProjects);
-router.get("/:id", auth, getProject);
-router.post("/", auth, createProject);
-router.put("/:id", auth, updateProject);
-router.delete("/:id", auth, deleteProject);
+// Protect all routes
+router.use(auth);
+
+// ==================== PROJECT ROUTES ====================
+router.get("/", getProjects);                    // Get all projects
+router.get("/:id", getProject);                  // Get single project
+router.post("/", createProject);                 // Create new project
+router.put("/:id", updateProject);               // Update project
+router.delete("/:id", deleteProject);            // Delete project
 
 module.exports = router;
