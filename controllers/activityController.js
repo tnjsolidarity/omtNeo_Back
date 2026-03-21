@@ -1,22 +1,26 @@
 const Activity = require("../models/Activity");
 const Project = require("../models/Project");
 const mongoose = require('mongoose');
+const Counter = require("../models/Counter");
 
 // Helper function to generate activity ID
 async function generateActivityId() {
   const year = new Date().getFullYear();
-  const count = await Activity.countDocuments({
-    activityId: { $regex: `^ACT-${year}-` }
-  });
-  const paddedNumber = String(count + 1).padStart(4, "0");
-  return `ACT-${year}-${paddedNumber}`;
+
+  const counter = await Counter.findOneAndUpdate(
+    { name: `activityId-${year}` }, // 👈 year-based counter
+    { $inc: { seq: 1 } },
+    { new: true, upsert: true }
+  );
+
+  return `ACT-${year}-${String(counter.seq).padStart(4, "0")}`;
 }
 
 // CREATE activity
 exports.createActivity = async (req, res) => {
   try {
     const { projectId } = req.params;
-    const { name, description, priority, startDate, endDate, incharge } = req.body;
+    const { name, description, priority, status, startDate, endDate, incharge } = req.body;
 
     console.log('Creating activity for project:', projectId);
 
@@ -41,6 +45,7 @@ exports.createActivity = async (req, res) => {
       name: name,
       description: description || "",
       priority: priority || "Medium",
+      status: status || "Planning",
       startDate: startDate || null,
       endDate: endDate || null,
       incharge: incharge || null
@@ -122,6 +127,7 @@ exports.updateActivity = async (req, res) => {
     if (req.body.name !== undefined) updateData.name = req.body.name;
     if (req.body.description !== undefined) updateData.description = req.body.description;
     if (req.body.priority !== undefined) updateData.priority = req.body.priority;
+    if (req.body.status !== undefined) updateData.status = req.body.status;
     if (req.body.startDate !== undefined) updateData.startDate = req.body.startDate || null;
     if (req.body.endDate !== undefined) updateData.endDate = req.body.endDate || null;
     if (req.body.incharge !== undefined) updateData.incharge = req.body.incharge || null;

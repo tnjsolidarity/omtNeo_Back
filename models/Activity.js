@@ -33,7 +33,11 @@ const activitySchema = new mongoose.Schema(
       enum: ["Low", "Medium", "High", "Critical"],
       default: "Medium"
     },
-    
+    status: {
+      type: String,
+      enum: ["Planning", "In Progress", "On Hold", "Completed", "Cancelled"],
+      default: "Planning"
+    },
     // Date range
     startDate: { 
       type: Date, 
@@ -62,7 +66,6 @@ activitySchema.index({ priority: 1 });
 activitySchema.index({ startDate: 1 });
 activitySchema.index({ endDate: 1 });
 activitySchema.index({ incharge: 1 });
-activitySchema.index({ activityId: 1 });
 
 // Text indexes for search functionality
 activitySchema.index({ name: 'text', description: 'text' });

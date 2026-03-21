@@ -1,21 +1,35 @@
 const Project = require("../models/Project");
 const mongoose = require('mongoose');
+const Activity = require("../models/Activity");
 
 // ==================== PROJECT CONTROLLER ====================
+
+const Counter = require("../models/Counter");
+
+async function getNextProjectId() {
+  const counter = await Counter.findOneAndUpdate(
+    { name: "projectId" },
+    { $inc: { seq: 1 } },
+    { new: true, upsert: true }
+  );
+
+  const year = new Date().getFullYear();
+  return `PROJ-${year}-${String(counter.seq).padStart(4, "0")}`;
+}
 
 /**
  * GET ALL PROJECTS
  * Fetch all projects with optional filters
  */
+
 exports.getProjects = async (req, res) => {
   try {
     const { status, priority, search } = req.query;
     let query = {};
 
-    // Apply filters
     if (status) query.status = status;
     if (priority) query.priority = priority;
-    
+
     if (search) {
       query.$or = [
         { projectId: { $regex: search, $options: 'i' } },
@@ -27,8 +41,28 @@ exports.getProjects = async (req, res) => {
     const projects = await Project.find(query)
       .populate('projectManager', 'name memberId role')
       .sort({ createdAt: -1 });
-    
-    res.json(projects);
+
+    // ✅ ADD THIS BLOCK
+    const projectsWithProgress = await Promise.all(
+      projects.map(async (project) => {
+        const total = await Activity.countDocuments({ projectId: project._id });
+        const completed = await Activity.countDocuments({
+          projectId: project._id,
+          status: "Completed"
+        });
+
+        const progress = total === 0 ? 0 : Math.round((completed / total) * 100);
+
+        return {
+          ...project.toObject(),
+          totalActivities: total,
+          completedActivities: completed,
+          progress
+        };
+      })
+    );
+
+    res.json(projectsWithProgress);
   } catch (err) {
     console.error("Get Projects Error:", err);
     res.status(500).json({ error: err.message });
@@ -76,8 +110,7 @@ exports.createProject = async (req, res) => {
     }
 
     // Generate project ID
-    const count = await Project.countDocuments();
-    const projectId = `PROJ-${new Date().getFullYear()}-${String(count + 1).padStart(4, "0")}`;
+    const projectId = await getNextProjectId();
 
     console.log("Creating Project with data:", req.body);
 
@@ -145,14 +178,26 @@ exports.updateProject = async (req, res) => {
  * DELETE PROJECT
  * Delete a project by ID
  */
+
 exports.deleteProject = async (req, res) => {
   try {
-    const project = await Project.findByIdAndDelete(req.params.id);
-    
+    const projectId = req.params.id;
+
+    // Check if activities exist
+    const activityExists = await Activity.exists({ projectId });
+
+    if (activityExists) {
+      return res.status(400).json({
+        error: "Deletion not possible because this project has activities inside it."
+      });
+    }
+
+    const project = await Project.findByIdAndDelete(projectId);
+
     if (!project) {
       return res.status(404).json({ error: "Project not found" });
     }
-    
+
     res.json({ msg: "Project deleted successfully" });
   } catch (err) {
     console.error("Delete Project Error:", err);
