@@ -20,6 +20,9 @@ app.use("/api/members", require("./routes/memberRoutes"));
 app.use("/api/projects", require("./routes/projectRoutes"));      // Project routes only
 app.use("/api/projects", require("./routes/activityRoutes"));     // Activity routes (same base path)
 
+// Mount routes
+app.use("/api/projects", require("./routes/eventRoutes")); // Add this line
+
 // ==================== START SERVER ====================
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));

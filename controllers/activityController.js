@@ -100,6 +100,16 @@ exports.getActivities = async (req, res) => {
 exports.getActivity = async (req, res) => {
   try {
     const { projectId, activityId } = req.params;
+
+    // Validate IDs
+    if (!projectId || !activityId) {
+      return res.status(400).json({ error: "Project ID and Activity ID are required" });
+    }
+    
+    // Validate ObjectId format
+    if (!mongoose.Types.ObjectId.isValid(projectId) || !mongoose.Types.ObjectId.isValid(activityId)) {
+      return res.status(400).json({ error: "Invalid ID format" });
+    }    
     
     const activity = await Activity.findOne({ _id: activityId, projectId })
       .populate('incharge', 'name memberId role');
