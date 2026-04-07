@@ -29,8 +29,6 @@ exports.createEvent = async (req, res) => {
       startDate, 
       endDate, 
       assignedTo,
-      estimatedHours,
-      actualHours 
     } = req.body;
 
     console.log('Creating event for activity:', activityId);
@@ -61,8 +59,6 @@ exports.createEvent = async (req, res) => {
       startDate: startDate || null,
       endDate: endDate || null,
       assignedTo: assignedTo || null,
-      estimatedHours: estimatedHours || null,
-      actualHours: actualHours || null
     });
 
     const savedEvent = await event.save();
@@ -209,8 +205,6 @@ exports.updateEvent = async (req, res) => {
     if (req.body.startDate !== undefined) updateData.startDate = req.body.startDate || null;
     if (req.body.endDate !== undefined) updateData.endDate = req.body.endDate || null;
     if (req.body.assignedTo !== undefined) updateData.assignedTo = req.body.assignedTo || null;
-    if (req.body.estimatedHours !== undefined) updateData.estimatedHours = req.body.estimatedHours || null;
-    if (req.body.actualHours !== undefined) updateData.actualHours = req.body.actualHours || null;
     
     const event = await Event.findOneAndUpdate(
       { _id: eventId, activityId: activityId },
@@ -275,9 +269,6 @@ exports.getEventStats = async (req, res) => {
     const onHoldEvents = events.filter(e => e.status === "On Hold").length;
     const cancelledEvents = events.filter(e => e.status === "Cancelled").length;
     
-    const totalEstimatedHours = events.reduce((sum, e) => sum + (e.estimatedHours || 0), 0);
-    const totalActualHours = events.reduce((sum, e) => sum + (e.actualHours || 0), 0);
-    
     // Group events by place
     const eventsByPlace = events.reduce((acc, event) => {
       if (event.place) {
@@ -297,11 +288,6 @@ exports.getEventStats = async (req, res) => {
       onHold: onHoldEvents,
       cancelled: cancelledEvents,
       progress: totalEvents === 0 ? 0 : Math.round((completedEvents / totalEvents) * 100),
-      hours: {
-        estimated: totalEstimatedHours,
-        actual: totalActualHours,
-        variance: totalActualHours - totalEstimatedHours
-      },
       places: {
         total: Object.keys(eventsByPlace).length,
         breakdown: Object.keys(eventsByPlace).map(place => ({

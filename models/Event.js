@@ -64,20 +64,10 @@ const eventSchema = new mongoose.Schema(
       ref: 'Member',
       default: null
     },
-    
-    // Optional: Estimated hours
-    estimatedHours: {
-      type: Number,
-      default: null,
-      min: 0
-    },
-    
-    // Optional: Actual hours spent
-    actualHours: {
-      type: Number,
-      default: null,
-      min: 0
-    }
+    tasks: [{
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Task'
+    }]
   },
   { timestamps: true }
 );
