@@ -1,4 +1,3 @@
-// models/Member.js
 const mongoose = require('mongoose');
 
 const memberSchema = new mongoose.Schema(
@@ -18,11 +17,13 @@ const memberSchema = new mongoose.Schema(
       ],
       required: true
     },
-    // Add dateOfBirth field here
     dateOfBirth: { 
       type: Date,
       default: null
     },
+    // Add photo fields
+    photoUrl: { type: String, default: null },
+    photoPublicId: { type: String, default: null },
     skills: { type: [String], default: [] },
     career: { type: [String], default: [] },
     education: { type: [String], default: [] },
