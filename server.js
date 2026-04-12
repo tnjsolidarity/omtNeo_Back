@@ -20,8 +20,10 @@ app.use("/api/members", require("./routes/memberRoutes"));
 app.use("/api/projects", require("./routes/projectRoutes"));      // Project routes
 app.use("/api/projects", require("./routes/activityRoutes"));     // Activity routes
 app.use("/api/projects", require("./routes/eventRoutes"));
-// Add task routes
-app.use("/api/projects/:projectId/activities/:activityId/events/:eventId/tasks", require("./routes/taskRoutes"));
+app.use("/api/projects/:projectId/activities/:activityId/events/:eventId/tasks", require("./routes/taskRoutes")); // Add task routes
+
+// Attendance routes - mounted separately
+app.use("/api/attendances", require("./routes/attendanceRoutes"));
 
 // ==================== START SERVER ====================
 const PORT = process.env.PORT || 5000;

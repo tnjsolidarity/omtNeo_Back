@@ -68,7 +68,7 @@ const taskSchema = new mongoose.Schema({
   },
   createdBy: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Member'
+    ref: 'Admin'
   }
 }, {
   timestamps: true

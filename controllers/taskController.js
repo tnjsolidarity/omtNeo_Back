@@ -14,8 +14,8 @@ const getTasks = async (req, res) => {
     }
     
     const tasks = await Task.find({ event: eventId })
-      .populate('assignedTo', 'name email memberId role')
-      .populate('createdBy', 'name email')
+      .populate('assignedTo', 'name memberId role')
+      .populate('createdBy', 'username')
       .populate('dependencies', 'name status')
       .sort({ createdAt: -1 });
     
@@ -97,11 +97,11 @@ const getTask = async (req, res) => {
     const { taskId } = req.params;
     
     const task = await Task.findById(taskId)
-      .populate('assignedTo', 'name email memberId role')
-      .populate('createdBy', 'name email')
+      .populate('assignedTo', 'name memberId role')
+      .populate('createdBy', 'username')
       .populate('dependencies', 'name status taskId')
-      .populate('comments.author', 'name email')
-      .populate('attachments.uploadedBy', 'name email');
+      .populate('comments.author', 'name')
+      .populate('attachments.uploadedBy', 'name');
     
     if (!task) {
       return res.status(404).json({ error: 'Task not found' });
@@ -184,8 +184,8 @@ const createTask = async (req, res) => {
     const task = await Task.create(taskData);
     
     const populatedTask = await Task.findById(task._id)
-      .populate('assignedTo', 'name email memberId role')
-      .populate('createdBy', 'name email');
+      .populate('assignedTo', 'name memberId role')
+      .populate('createdBy', 'username');
     
     res.status(201).json(populatedTask);
   } catch (error) {
@@ -235,8 +235,8 @@ const updateTask = async (req, res) => {
       taskId,
       updateData,
       { returnDocument: 'after', runValidators: true }  // Change 'new: true' to 'returnDocument: "after"'
-    ).populate('assignedTo', 'name email memberId role')
-     .populate('createdBy', 'name email')
+    ).populate('assignedTo', 'name memberId role')
+     .populate('createdBy', 'username')
      .populate('dependencies', 'name status');
     
     res.json(updatedTask);
