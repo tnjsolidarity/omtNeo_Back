@@ -25,6 +25,9 @@ app.use("/api/projects/:projectId/activities/:activityId/events/:eventId/tasks",
 // Attendance routes - mounted separately
 app.use("/api/attendances", require("./routes/attendanceRoutes"));
 
+// Accounts routes - mounted separately
+app.use("/api/accounts", require("./routes/accountsRoutes"));
+
 // ==================== START SERVER ====================
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
