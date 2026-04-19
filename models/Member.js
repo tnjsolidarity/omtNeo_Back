@@ -9,6 +9,7 @@ const memberSchema = new mongoose.Schema(
       type: String,
       enum: [
         "Associate",
+        "Guest Associate",
         "Member",
         "GuestMember",
         "District Secretary",
