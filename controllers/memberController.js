@@ -25,8 +25,6 @@ exports.createMember = async (req, res) => {
       role,
       phone,
       dateOfBirth,
-      educationalDepartment,
-      passedOutYear
     } = req.body;
 
     if (!name || !role) {
@@ -56,8 +54,6 @@ exports.createMember = async (req, res) => {
       skills: skills,
       career: career,
       education: education,
-      educationalDepartment: educationalDepartment || "",
-      passedOutYear: passedOutYear ? parseInt(passedOutYear) : null
     });
 
     res.status(201).json(member);
@@ -126,8 +122,6 @@ exports.updateMember = async (req, res) => {
       skills: skills,
       career: career,
       education: education,
-      educationalDepartment: req.body.educationalDepartment || "",
-      passedOutYear: req.body.passedOutYear ? parseInt(req.body.passedOutYear) : null
     };
 
     console.log("Update data:", JSON.stringify(updateData, null, 2));

@@ -27,9 +27,11 @@ const memberSchema = new mongoose.Schema(
     photoPublicId: { type: String, default: null },
     skills: { type: [String], default: [] },
     career: { type: [String], default: [] },
-    education: { type: [String], default: [] },
-    educationalDepartment: { type: String, default: "" },
-    passedOutYear: { type: Number, default: null },
+    education: [{
+      degree: { type: String, default: "" },
+      department: { type: String, default: "" },
+      passedOutYear: { type: Number, default: null }
+    }],
   },
   { timestamps: true }
 );
