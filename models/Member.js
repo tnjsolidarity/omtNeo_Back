@@ -32,6 +32,8 @@ const memberSchema = new mongoose.Schema(
       department: { type: String, default: "" },
       passedOutYear: { type: Number, default: null }
     }],
+    district: { type: String, default: null },
+    place: { type: String, default: null },
   },
   { timestamps: true }
 );
