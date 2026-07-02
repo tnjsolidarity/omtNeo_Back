@@ -27,6 +27,9 @@ exports.createMember = async (req, res) => {
       dateOfBirth,
       district,
       place,
+      memberPresenceStatus,
+      movedDistrict,
+      movedPlace,
     } = req.body;
 
     if (!name || !role) {
@@ -58,6 +61,9 @@ exports.createMember = async (req, res) => {
       education: education,
       district: district || null,
       place: place || null,
+      memberPresenceStatus: memberPresenceStatus || "Yes",
+      movedDistrict: movedDistrict || null,
+      movedPlace: movedPlace || null,
     });
 
     res.status(201).json(member);
@@ -128,6 +134,9 @@ exports.updateMember = async (req, res) => {
       education: education,
       district: req.body.district || null,
       place: req.body.place || null,
+      memberPresenceStatus: req.body.memberPresenceStatus || "Yes",
+      movedDistrict: req.body.movedDistrict || null,
+      movedPlace: req.body.movedPlace || null,
     };
 
     console.log("Update data:", JSON.stringify(updateData, null, 2));

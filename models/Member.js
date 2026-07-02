@@ -34,6 +34,13 @@ const memberSchema = new mongoose.Schema(
     }],
     district: { type: String, default: null },
     place: { type: String, default: null },
+    memberPresenceStatus: {
+      type: String,
+      enum: ["Yes", "Moved"],
+      default: "Yes"
+    },
+    movedDistrict: { type: String, default: null },
+    movedPlace: { type: String, default: null },
   },
   { timestamps: true }
 );
